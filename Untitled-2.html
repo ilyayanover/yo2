@@ -2,723 +2,431 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для самой любимой</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>❤️ Наш календарь ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+        :root {
+            --primary: #FF2D55;
+            --secondary: #FF8A9D;
+            --bg: #FFF9FA;
+            --text: #3A3A3A;
+            --light-text: #888;
+            --card-bg: #FFFFFF;
+            --past-day: #FFE6EB;
+        }
         
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            font-family: 'Caveat', cursive;
-            background: linear-gradient(135deg, #ffebf3, #f9f0ff);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            color: #5a3d5a;
-            padding: 20px;
-            text-align: center;
-            perspective: 1000px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
         
         .container {
-            max-width: 600px;
-            width: 100%;
+            max-width: 100%;
+            padding: 20px 15px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
             position: relative;
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+        }
+        
+        .subtitle {
+            color: var(--light-text);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #FFE6EB;
+            border-radius: 10px;
+            height: 8px;
+            margin: 15px 0 25px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 5px;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .day {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .day:active {
+            transform: scale(0.95);
+        }
+        
+        .day.past {
+            background-color: var(--past-day);
+            color: var(--primary);
+        }
+        
+        .day.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(255,45,85,0.2);
+        }
+        
+        .day.future {
+            color: var(--light-text);
+            opacity: 0.7;
+        }
+        
+        .day.empty {
+            background-color: #f5f5f5;
+            color: #ccc;
+        }
+        
+        .message-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(255,45,85,0.1);
         }
         
         .message {
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            font-weight: 700;
-            opacity: 1;
-            transition: opacity 0.5s ease;
-            color: #d23669;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-            line-height: 1.3;
+            font-size: 18px;
+            line-height: 1.5;
+            color: var(--text);
         }
         
-        .btn {
-            background: linear-gradient(45deg, #d23669, #ff6b81);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(210, 54, 105, 0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
-            outline: none;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(210, 54, 105, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(1px);
-        }
-        
-        /* Стили для реалистичного сундука */
-        .chest-container {
-            width: 280px;
-            height: 210px;
-            margin: 40px auto;
-            position: relative;
-            display: none;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-        
-        .chest-container.show {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .chest {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            cursor: pointer;
-            transform-style: preserve-3d;
-        }
-        
-        .chest-body {
-            width: 100%;
-            height: 70%;
-            background: 
-                linear-gradient(15deg, #8B4513 0%, #A0522D 30%, #CD853F 70%, #D2B48C 100%),
-                repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 10px,
-                    rgba(0,0,0,0.1) 10px,
-                    rgba(0,0,0,0.1) 20px
-                );
-            border-radius: 0 0 15px 15px;
+        .day-number {
             position: absolute;
-            bottom: 0;
-            box-shadow: 
-                inset 0 0 30px rgba(0, 0, 0, 0.3),
-                0 10px 25px rgba(0, 0, 0, 0.2);
-            border: 5px solid #5D3A1A;
-            z-index: 1;
-            transform: translateZ(0);
-        }
-        
-        .chest-lid {
-            width: 110%;
-            height: 35%;
-            background: 
-                linear-gradient(15deg, #5D3A1A 0%, #8B4513 50%, #A0522D 100%),
-                repeating-linear-gradient(
-                    -45deg,
-                    transparent,
-                    transparent 10px,
-                    rgba(0,0,0,0.1) 10px,
-                    rgba(0,0,0,0.1) 20px
-                );
-            border-radius: 15px 15px 5px 5px;
-            position: absolute;
-            top: 0;
-            left: -5%;
-            transform-origin: bottom center;
-            transform: rotateX(0deg);
-            transition: transform 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            box-shadow: 
-                0 -10px 30px rgba(0, 0, 0, 0.4),
-                inset 0 -5px 10px rgba(255, 255, 255, 0.1);
-            border: 5px solid #3D2810;
-            z-index: 3;
-        }
-        
-        .chest-lid.open {
-            transform: rotateX(-160deg);
-        }
-        
-        .chest-lock {
-            width: 40px;
-            height: 40px;
-            background: 
-                radial-gradient(circle at 30% 30%, #ddd 0%, #aaa 50%, #777 100%);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 4;
-            box-shadow: 
-                0 0 15px rgba(0, 0, 0, 0.6),
-                inset 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-        
-        .chest-lock:before {
-            content: "";
-            width: 15px;
-            height: 15px;
-            background: #222;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.2);
-        }
-        
-        .chest-band {
-            width: 100%;
-            height: 20px;
-            background: 
-                linear-gradient(15deg, #3D2810, #5D3A1A, #3D2810);
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            box-shadow: 
-                0 3px 10px rgba(0, 0, 0, 0.4),
-                inset 0 0 10px rgba(255, 215, 0, 0.2);
-            z-index: 2;
-        }
-        
-        .chest-band:before, 
-        .chest-band:after {
-            content: "";
-            width: 20px;
-            height: 20px;
-            background: 
-                radial-gradient(circle at 30% 30%, #eee 0%, #aaa 50%, #666 100%);
-            border-radius: 50%;
-            position: absolute;
-            box-shadow: 
-                0 0 8px rgba(0, 0, 0, 0.6),
-                inset 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-        
-        .chest-band:before {
-            left: 15px;
-        }
-        
-        .chest-band:after {
-            right: 15px;
-        }
-        
-        /* Детали сундука */
-        .chest-details {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-        
-        .chest-nail {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: 
-                radial-gradient(circle at 30% 30%, #ddd 0%, #999 50%, #555 100%);
-            border-radius: 50%;
-            box-shadow: 
-                0 0 5px rgba(0, 0, 0, 0.5),
-                inset 0 0 3px rgba(255, 255, 255, 0.3);
-        }
-        
-        .chest-nail.top-left {
-            top: 15%;
-            left: 10%;
-        }
-        
-        .chest-nail.top-right {
-            top: 15%;
-            right: 10%;
-        }
-        
-        .chest-nail.bottom-left {
-            bottom: 20%;
-            left: 10%;
-        }
-        
-        .chest-nail.bottom-right {
-            bottom: 20%;
-            right: 10%;
-        }
-        
-        .chest-wood-grain {
-            position: absolute;
-            width: 80%;
-            height: 60%;
-            top: 20%;
-            left: 10%;
-            background: 
-                linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(0,0,0,0.05) 20%,
-                    transparent 40%,
-                    rgba(0,0,0,0.05) 60%,
-                    transparent 80%,
-                    rgba(0,0,0,0.05) 100%
-                );
-            opacity: 0.5;
-            pointer-events: none;
-        }
-        
-        .letter {
-            background: #fff9e6;
-            padding: 25px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-width: 90%;
-            margin: 20px auto;
-            position: relative;
-            display: none;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.5s ease;
-            border: 1px solid #f0e0c0;
-            font-size: 1.4rem;
-            line-height: 1.6;
-            color: #5a3d5a;
-            transform-origin: top center;
-        }
-        
-        .letter:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0));
-        }
-        
-        .letter:after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            background: linear-gradient(to top, rgba(255,255,255,0.8), rgba(255,255,255,0));
-        }
-        
-        .letter.show {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-        }
-        
-        .letter.fly-away {
-            animation: crumpleAndFly 1.5s forwards cubic-bezier(0.65, 0, 0.35, 1);
-        }
-        
-        .reasons-container {
-            display: none;
-            width: 100%;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-        
-        .reasons-container.show {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .reason-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
-            width: 100%;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .reason-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        .reason-number {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 0.8rem;
-            color: #d23669;
-            font-weight: bold;
-        }
-        
-        .reason-text {
-            font-size: 1.2rem;
-            color: #5a3d5a;
-        }
-        
-        .reasons-title {
-            font-size: 2rem;
-            color: #d23669;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .reasons-subtitle {
-            font-size: 1.2rem;
-            color: #5a3d5a;
-            margin-bottom: 30px;
-            text-align: center;
-            font-weight: normal;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0) rotate(0deg); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotate(-1deg); }
-            20%, 40%, 60%, 80% { transform: translateX(5px) rotate(1deg); }
-        }
-        
-        @keyframes crumpleAndFly {
-            0% { transform: scale(1) rotate(0deg) translateY(0); opacity: 1; }
-            30% { transform: scale(0.8) rotate(5deg) translateY(0); opacity: 1; }
-            50% { transform: scale(0.6) rotate(10deg) translateY(-50px); opacity: 0.8; }
-            70% { transform: scale(0.4) rotate(15deg) translateY(-150px); opacity: 0.6; }
-            100% { transform: scale(0.2) rotate(20deg) translateY(-300px); opacity: 0; }
-        }
-        
-        @keyframes chestDisappear {
-            0% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(0.5); }
-        }
-        
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(210, 105, 30, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(210, 105, 30, 0.8); }
-        }
-        
-        .shake {
-            animation: shake 0.5s;
-        }
-        
-        .disappear {
-            animation: chestDisappear 0.5s forwards;
-        }
-        
-        .glow {
-            animation: glow 1.5s infinite;
+            top: 5px;
+            right: 5px;
+            font-size: 10px;
+            color: inherit;
+            opacity: 0.7;
         }
         
         .heart {
             position: absolute;
-            pointer-events: none;
-            opacity: 0;
-            font-size: 20px;
-            color: #ff6b81;
-            animation: floatUp 3s ease-in forwards;
+            bottom: 10px;
+            right: 10px;
+            color: var(--secondary);
+            font-size: 12px;
         }
         
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 1000;
+            animation: fadeInOut 1.5s ease forwards;
+            display: none;
         }
         
-        .fade-in {
-            animation: fadeIn 1s forwards;
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
         }
         
-        .fade-out {
-            animation: fadeOut 1s forwards;
+        @media (min-width: 400px) {
+            .calendar {
+                grid-template-columns: repeat(6, 1fr);
+            }
         }
         
+        @media (min-width: 500px) {
+            .calendar {
+                grid-template-columns: repeat(7, 1fr);
+            }
+            
+            .container {
+                max-width: 500px;
+            }
+        }
+        
+        /* Анимация */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-20px); }
+        .message-card {
+            animation: fadeIn 0.3s ease forwards;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="message" id="greeting">Приветик любимая</div>
-        <button class="btn" id="lookInsideBtn">Заглянуть внутрь</button>
-        
-        <div class="chest-container" id="chestContainer">
-            <div class="chest" id="chest">
-                <div class="chest-lid" id="chestLid"></div>
-                <div class="chest-body"></div>
-                <div class="chest-lock"></div>
-                <div class="chest-band"></div>
-                <div class="chest-details">
-                    <div class="chest-nail top-left"></div>
-                    <div class="chest-nail top-right"></div>
-                    <div class="chest-nail bottom-left"></div>
-                    <div class="chest-nail bottom-right"></div>
-                </div>
-                <div class="chest-wood-grain"></div>
-            </div>
-        </div>
-        
-        <div class="letter" id="letter">
-            <p>Привет котенок! Эти 100 дней промелькнули незаметно ведь с тобой я не ощущаю время. Наши отношения это самое прекрасное и теплое что я когда либо видел, хочу прижать тебя к себе пока пишу это... Мы будем вместе навечно.</p>
-            <button class="btn" id="reasonsBtn">100 причин почему ты лучшая</button>
-        </div>
-        
-        <div class="reasons-container" id="reasonsContainer">
-            <h2 class="reasons-title">100 причин почему ты самая лучшая</h2>
-            <p class="reasons-subtitle">Каждая из этих причин - частичка моего сердца</p>
+        <header>
+            <h1>Наш календарь любви</h1>
+            <div class="subtitle">Каждый день — новое признание</div>
             
-            <div id="reasonsList">
-                <!-- Причины будут добавлены через JavaScript -->
+            <div class="progress-text">
+                <span>День <span id="current-day">1</span> из 185</span>
+                <span id="percentage">0%</span>
             </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </header>
+        
+        <div class="calendar" id="calendar"></div>
+        
+        <div class="message-card">
+            <div class="message" id="message">Нажми на любой прошедший день, чтобы увидеть сообщение ❤️</div>
+            <div class="heart">♥</div>
         </div>
+        
+        <div class="notification" id="notification">еще не время:)</div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const greeting = document.getElementById('greeting');
-            const lookInsideBtn = document.getElementById('lookInsideBtn');
-            const chestContainer = document.getElementById('chestContainer');
-            const chest = document.getElementById('chest');
-            const chestLid = document.getElementById('chestLid');
-            const letter = document.getElementById('letter');
-            const reasonsBtn = document.getElementById('reasonsBtn');
-            const reasonsContainer = document.getElementById('reasonsContainer');
-            const reasonsList = document.getElementById('reasonsList');
+        // Сообщения только для заполненных дней (1-21)
+        const filledMessages = {
+            1: "Нам уже пол года любимая, ты самая лучшая на свете и я ни капли не жалею что 185 дней назад решил нажать лайк в дайвинчике, люблю тебя любимая.",
+            2: "Ты делаешь мою жизнь ярче, даже на расстоянии. Люблю тебя солнышко.",
+            3: "Каждое утро начинается с мыслей о тебе моя любимая девочка.",
+            4: "Ты светлая часть моей жизни, святи ярче каждый день любимая.",
+            5: "Полгода с тобой — лучшие месяцы моей жизни.",
+            6: "Ты в моем сердце, куда бы я ни пошёл.",
+            7: "Мечтаю о том дне, когда проснусь рядом с тобой.",
+            8: "Даже через экран чувствую твою теплоту.",
+            9: "Каждый вечер представляю, как держу тебя за талию.",
+            10: "Я люблю тебя, и это навсегда и да это точно точно.",
+            11: "Твоё 'привет зайчик' — лучшая часть моего дня.",
+            12: "Иногда хочется просто прижаться к тебе и молчать.",
+            13: "У нас с тобой всё получится.",
+            14: "Ждать тебя — значит любить сильнее.",
+            15: "Наши полгода — это только начало. Никогда тебя не брошу любимая.",
+            16: "Хочу, чтобы ты знала: я всегда думаю о тебе.",
+            17: "Я чувствую твою любовь даже в простом сообщении.",
+            18: "Мне не нужно солнце, когда есть ты.",
+            19: "Ты для меня важнее всего.",
+            20: "Я люблю тебя больше, чем могу выразить словами.",
+            21: "Спасибо, что даёшь мне веру в чудо."
+        };
+        
+        const calendarEl = document.getElementById('calendar');
+        const messageEl = document.getElementById('message');
+        const currentDayEl = document.getElementById('current-day');
+        const progressBarEl = document.getElementById('progress-bar');
+        const percentageEl = document.getElementById('percentage');
+        const notificationEl = document.getElementById('notification');
+        
+        // Текущая дата (день с момента начала)
+        const startDate = new Date(); // Замените на реальную дату начала
+        startDate.setDate(startDate.getDate() - 1); // Для примера - начали вчера
+        
+        // Вычисляем текущий день (1-185)
+        function getCurrentDay() {
+            const now = new Date();
+            const diffTime = now - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            return Math.min(Math.max(diffDays, 1), 185);
+        }
+        
+        // Создаем календарь
+        function createCalendar() {
+            calendarEl.innerHTML = '';
+            const currentDay = getCurrentDay();
             
-            let clickCount = 0;
-            const clicksToOpen = 10;
-            
-            // 100 причин почему она самая лучшая
-            const reasons = [
-                "1. Ты заставляешь мое сердце биться чаще, даже когда просто думаю о тебе",
-                "2. Твоя улыбка освещает мои самые темные дни",
-                "3. Ты понимаешь меня без слов",
-                "4. Твой смех - самая прекрасная мелодия в мире",
-                "5. С тобой я чувствую себя самым счастливым человеком на свете",
-                "6. Ты умеешь поддержать меня в любой ситуации",
-                "7. Твои глаза - это целые вселенные, в которых я хочу потеряться",
-                "8. Ты вдохновляешь меня становиться лучше",
-                "9. Твоя забота согревает меня даже на расстоянии",
-                "10. Ты самая красивая девушка в мире, и я не устану это повторять",
-                "11. Ты умеешь слушать и понимать меня",
-                "12. Твои объятия - мое самое безопасное место",
-                "13. С тобой даже обычные моменты становятся особенными",
-                "14. Ты умеешь прощать мои недостатки",
-                "15. Ты веришь в меня больше, чем я сам в себя",
-                "16. Твоя доброта не знает границ",
-                "17. Ты умеешь находить радость в мелочах",
-                "18. Ты всегда знаешь, как поднять мне настроение",
-                "19. Ты принимаешь меня таким, какой я есть",
-                "20. Твоя любовь делает меня сильнее",
-                "21. Ты умеешь удивлять меня даже в обычные дни",
-                "22. Ты моя самая большая мотивация",
-                "23. Ты умеешь любить так искренне и преданно",
-                "24. Ты всегда находишь нужные слова",
-                "25. Ты делаешь мою жизнь яркой и насыщенной",
-                "26. Ты умеешь прощать, когда я ошибаюсь",
-                "27. Ты всегда стараешься понять меня",
-                "28. Ты умеешь любить по-настоящему",
-                "29. Ты самая нежная и заботливая",
-                "30. Ты умеешь жертвовать ради меня",
-                "31. Ты всегда веришь в наши мечты",
-                "32. Ты умеешь создавать уют даже на расстоянии",
-                "33. Ты самая терпеливая девушка в мире",
-                "34. Ты умеешь любить меня даже в мои худшие моменты",
-                "35. Ты всегда находишь время для меня",
-                "36. Ты умеешь прощать мои глупые шутки",
-                "37. Ты всегда поддерживаешь мои начинания",
-                "38. Ты умеешь любить так, как никто другой",
-                "39. Ты всегда знаешь, что мне нужно",
-                "40. Ты умеешь делать каждый день особенным",
-                "41. Ты самая романтичная девушка, которую я знаю",
-                "42. Ты умеешь слушать мои глупые истории",
-                "43. Ты всегда находишь способ меня порадовать",
-                "44. Ты умеешь любить меня даже когда я невыносим",
-                "45. Ты всегда веришь в лучшее во мне",
-                "46. Ты умеешь находить общий язык со всеми",
-                "47. Ты всегда поддерживаешь меня в трудные моменты",
-                "48. Ты умеешь любить без условий и требований",
-                "49. Ты всегда находишь время для наших разговоров",
-                "50. Ты умеешь делать меня счастливым даже на расстоянии",
-                "51. Ты самая понимающая девушка в мире",
-                "52. Ты умеешь прощать мои ошибки",
-                "53. Ты всегда находишь способ меня утешить",
-                "54. Ты умеешь любить меня даже когда я этого не заслуживаю",
-                "55. Ты всегда веришь в наше будущее",
-                "56. Ты умеешь находить радость в простых вещах",
-                "57. Ты всегда поддерживаешь мои мечты",
-                "58. Ты умеешь любить так, как я даже не мечтал",
-                "59. Ты всегда находишь способ меня вдохновить",
-                "60. Ты умеешь делать мою жизнь лучше",
-                "61. Ты самая преданная девушка в мире",
-                "62. Ты умеешь прощать мои слабости",
-                "63. Ты всегда находишь способ меня понять",
-                "64. Ты умеешь любить меня даже когда я сомневаюсь",
-                "65. Ты всегда веришь в мои силы",
-                "66. Ты умеешь находить выход из любой ситуации",
-                "67. Ты всегда поддерживаешь меня в моих решениях",
-                "68. Ты умеешь любить так, как никто другой не сможет",
-                "69. Ты всегда находишь способ меня удивить",
-                "70. Ты умеешь делать каждый день незабываемым",
-                "71. Ты самая мудрая девушка, которую я знаю",
-                "72. Ты умеешь прощать мои недостатки",
-                "73. Ты всегда находишь способ меня рассмешить",
-                "74. Ты умеешь любить меня даже когда я не прав",
-                "75. Ты всегда веришь в нашу любовь",
-                "76. Ты умеешь находить красоту в обыденном",
-                "77. Ты всегда поддерживаешь меня в моих начинаниях",
-                "78. Ты умеешь любить так, как я даже не представлял",
-                "79. Ты всегда находишь способ меня порадовать",
-                "80. Ты умеешь делать мою жизнь осмысленной",
-                "81. Ты самая чуткая девушка в мире",
-                "82. Ты умеешь прощать мои промахи",
-                "83. Ты всегда находишь способ меня успокоить",
-                "84. Ты умеешь любить меня даже когда я далеко",
-                "85. Ты всегда веришь в наши возможности",
-                "86. Ты умеешь находить свет в темноте",
-                "87. Ты всегда поддерживаешь меня в моих планах",
-                "88. Ты умеешь любить так, как никто до тебя",
-                "89. Ты всегда находишь способ меня вдохновить",
-                "90. Ты умеешь делать каждый момент особенным",
-                "91. Ты самая искренняя девушка, которую я знаю",
-                "92. Ты умеешь прощать мои ошибки",
-                "93. Ты всегда находишь способ меня понять",
-                "94. Ты умеешь любить меня даже когда я несовершенен",
-                "95. Ты всегда веришь в наше счастье",
-                "96. Ты умеешь находить радость в мелочах",
-                "97. Ты всегда поддерживаешь меня в моих стремлениях",
-                "98. Ты умеешь любить так, как я даже не мечтал",
-                "99. Ты всегда находишь способ сделать меня счастливым",
-                "100. Ты просто есть, и это самое большое чудо в моей жизни"
-            ];
-            
-            // Создаем карточки с причинами
-            reasons.forEach((reason, index) => {
-                const reasonCard = document.createElement('div');
-                reasonCard.className = 'reason-card';
+            for (let i = 1; i <= 185; i++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day';
+                dayEl.innerHTML = `<span class="day-number">${i}</span>`;
+                dayEl.dataset.day = i;
                 
-                const reasonNumber = document.createElement('div');
-                reasonNumber.className = 'reason-number';
-                reasonNumber.textContent = `#${index + 1}`;
-                
-                const reasonText = document.createElement('div');
-                reasonText.className = 'reason-text';
-                reasonText.textContent = reason.substring(reason.indexOf(' ') + 1);
-                
-                reasonCard.appendChild(reasonNumber);
-                reasonCard.appendChild(reasonText);
-                reasonsList.appendChild(reasonCard);
-            });
-            
-            // Первый шаг - нажатие на кнопку "Заглянуть внутрь"
-            lookInsideBtn.addEventListener('click', function() {
-                greeting.classList.add('fade-out');
-                lookInsideBtn.classList.add('fade-out');
-                
-                setTimeout(() => {
-                    greeting.style.display = 'none';
-                    lookInsideBtn.style.display = 'none';
-                    
-                    chestContainer.classList.add('show');
-                    chest.classList.add('glow');
-                }, 500);
-            });
-            
-            // Второй шаг - клики по сундуку
-            chest.addEventListener('click', function() {
-                clickCount++;
-                
-                chestContainer.classList.add('shake');
-                
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
+                if (i < currentDay) {
+                    dayEl.classList.add('past');
+                } else if (i > currentDay) {
+                    dayEl.classList.add('future');
+                } else {
+                    dayEl.classList.add('active');
                 }
                 
-                createHeart(chestContainer);
+                if (!filledMessages[i]) {
+                    dayEl.classList.add('empty');
+                }
                 
-                setTimeout(() => {
-                    chestContainer.classList.remove('shake');
-                }, 500);
+                dayEl.addEventListener('click', function() {
+                    handleDayClick(this.dataset.day);
+                });
                 
-                // Усиление свечения с каждым кликом
-                const intensity = 0.5 + (clickCount/clicksToOpen)*0.5;
-                chest.style.animation = `glow 1.5s infinite, shake 0.5s`;
-                chest.style.boxShadow = `0 0 ${10 + clickCount*2}px rgba(210, 105, 30, ${intensity})`;
-                
-                if (clickCount >= clicksToOpen) {
-                    chestLid.classList.add('open');
-                    chest.classList.remove('glow');
-                    
-                    setTimeout(() => {
-                        chestContainer.classList.add('disappear');
-                        
-                        setTimeout(() => {
-                            chestContainer.style.display = 'none';
-                            letter.style.display = 'block';
-                            setTimeout(() => {
-                                letter.classList.add('show');
-                            }, 50);
-                        }, 1000);
-                    }, 500);
+                calendarEl.appendChild(dayEl);
+            }
+            
+            // Показываем текущий день при загрузке
+            showCurrentDay(currentDay);
+        }
+        
+        // Обработка клика по дню
+        function handleDayClick(day) {
+            const dayNum = parseInt(day);
+            const currentDay = getCurrentDay();
+            
+            if (dayNum > currentDay) {
+                // Будущий день - показываем уведомление
+                showNotification();
+                return;
+            }
+            
+            if (!filledMessages[dayNum]) {
+                // Пустой день
+                messageEl.textContent = "Сообщение появится здесь позже...";
+                return;
+            }
+            
+            showMessage(dayNum);
+        }
+        
+        // Показываем сообщение для дня
+        function showMessage(day) {
+            const dayNum = parseInt(day);
+            
+            // Обновляем классы дней
+            document.querySelectorAll('.day').forEach(el => {
+                el.classList.remove('active');
+                if (parseInt(el.dataset.day) === dayNum) {
+                    el.classList.add('active');
                 }
             });
             
-            // Третий шаг - нажатие на кнопку "100 причин почему ты лучшая"
-            reasonsBtn.addEventListener('click', function() {
-                letter.classList.add('fly-away');
-                
-                setTimeout(() => {
-                    letter.style.display = 'none';
-                    reasonsContainer.classList.add('show');
-                    
-                    // Плавное появление карточек с задержкой
-                    const reasonCards = document.querySelectorAll('.reason-card');
-                    reasonCards.forEach((card, index) => {
-                        setTimeout(() => {
-                            card.style.opacity = 1;
-                            card.style.transform = 'translateY(0)';
-                        }, index * 50);
-                    });
-                }, 1500);
-            });
+            // Показываем сообщение
+            messageEl.textContent = filledMessages[dayNum];
+            currentDayEl.textContent = day;
             
-            // Функция для создания сердечек
-            function createHeart(element) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart');
-                heart.innerHTML = '❤';
+            // Обновляем прогресс
+            updateProgress(dayNum);
+            
+            // Сохраняем последний открытый день
+            localStorage.setItem('lastOpenDay', day);
+        }
+        
+        // Показываем текущий день
+        function showCurrentDay(day) {
+            currentDayEl.textContent = day;
+            updateProgress(day);
+            
+            if (filledMessages[day]) {
+                messageEl.textContent = filledMessages[day];
+            } else {
+                messageEl.textContent = "Сегодняшнее сообщение появится здесь позже...";
+            }
+        }
+        
+        // Обновляем прогресс бар
+        function updateProgress(day) {
+            const percent = Math.round((day / 185) * 100);
+            progressBarEl.style.width = percent + '%';
+            percentageEl.textContent = percent + '%';
+        }
+        
+        // Показываем уведомление
+        function showNotification() {
+            notificationEl.textContent = "еще не время:)";
+            notificationEl.style.display = 'block';
+            
+            setTimeout(() => {
+                notificationEl.style.display = 'none';
+            }, 1500);
+        }
+        
+        // При загрузке страницы
+        window.addEventListener('load', function() {
+            createCalendar();
+            
+            // Добавляем поддержку свайпов для сообщения
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            messageEl.parentElement.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            messageEl.parentElement.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                const currentDay = getCurrentDay();
+                const lastOpenDay = parseInt(localStorage.getItem('lastOpenDay')) || 1;
+                const day = Math.min(lastOpenDay, currentDay);
                 
-                const rect = element.getBoundingClientRect();
-                const x = rect.left + Math.random() * rect.width;
-                const y = rect.top + Math.random() * rect.height;
+                if (touchEndX < touchStartX - 50) {
+                    // Свайп влево - следующий день
+                    const nextDay = day + 1;
+                    if (nextDay <= currentDay && filledMessages[nextDay]) {
+                        showMessage(nextDay);
+                    }
+                }
                 
-                heart.style.left = `${x}px`;
-                heart.style.top = `${y}px`;
-                
-                document.body.appendChild(heart);
-                
-                setTimeout(() => {
-                    heart.remove();
-                }, 3000);
+                if (touchEndX > touchStartX + 50) {
+                    // Свайп вправо - предыдущий день
+                    const prevDay = day - 1;
+                    if (prevDay >= 1 && filledMessages[prevDay]) {
+                        showMessage(prevDay);
+                    }
+                }
             }
         });
     </script>
